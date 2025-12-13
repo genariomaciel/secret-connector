@@ -24,11 +24,13 @@ public class Application {
         String endpoint = "http://localhost:4566";
 
         Application app = new Application();
-
-        String secretString = app.getSecretToString(region, endpoint, accessKey, secretKey).orElse("Secret não encontrada");
+        SecretManagerConnector connector = new SecretManagerConnector(app.createForLocalStack(region, endpoint, accessKey, secretKey));
+        
+        String secretString = app.getSecretToString(connector).orElse("Secret não encontrada");
         logger.info("Secret como String: {}", secretString);
-
-        Optional<DatabaseCredentials> dbCredentials = app.getSecretDatabaseCredentials(region, endpoint, accessKey, secretKey);
+        
+        connector = new SecretManagerConnector(app.createForLocalStack(region, endpoint, accessKey, secretKey));
+        Optional<DatabaseCredentials> dbCredentials = app.getSecretDatabaseCredentials(connector);
         if (dbCredentials.isPresent()) {
             logger.info("Database Credentials: {}", dbCredentials.get());
         } else {
@@ -38,9 +40,8 @@ public class Application {
     }
 
 
-    public Optional<String> getSecretToString(String region, String endpoint, String accessKey, String secretKey) {
+    public Optional<String> getSecretToString(SecretManagerConnector connector) {
 
-        SecretManagerConnector connector = new SecretManagerConnector(SecretConverters.asString(), createForLocalStack(region, endpoint, accessKey, secretKey));
         Optional<String> secretValue = null;
         try {
             // Obtém a secret (substitua 'my-secret' pelo ARN ou Name da secret)
@@ -58,11 +59,8 @@ public class Application {
         return secretValue;
     }
 
-    public Optional<DatabaseCredentials> getSecretDatabaseCredentials(String region, String endpoint, String accessKey, String secretKey) {
-
-        SecretManagerConnector connector = new SecretManagerConnector(SecretConverters.asString(), createForLocalStack(region, endpoint, accessKey, secretKey));
+    public Optional<DatabaseCredentials> getSecretDatabaseCredentials(SecretManagerConnector connector) {
         Optional<DatabaseCredentials> databaseCredentials = null;
-
         try {
             // Obtém a secret (substitua 'my-secret' pelo ARN ou Name da secret)
             String secretName = "product_database_credentials";

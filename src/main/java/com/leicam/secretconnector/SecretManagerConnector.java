@@ -65,6 +65,23 @@ public class SecretManagerConnector {
         this(SecretConverters.asString(), SecretManagerClientConfig.create(region, profileName));
     }
 
+    /**
+     * Construtor que inicializa o cliente do Secrets Manager com uma região, conversor padrão e cliente customizado.
+     * Este é o construtor principal que permite máxima flexibilidade na configuração do conector.
+     * O conversor padrão será utilizado em chamadas de getSecret sem especificar um conversor explícito.
+     * 
+     * <p>O cliente SecretsManagerClient pode ser configurado com credenciais personalizadas, 
+     * timeout, retry policy e outras configurações avançadas antes de ser passado a este construtor.
+     *
+     * @param secretsManagerClient cliente AWS SecretsManagerClient configurado e pronto para uso.
+     *                              A responsabilidade de criar e manter este cliente é do chamador.
+     *                              Não pode ser nulo.
+     * 
+     * @throws IllegalArgumentException se algum dos parâmetros for nulo
+     */
+    public SecretManagerConnector(SecretsManagerClient secretsManagerClient) {
+        this(SecretConverters.asString(), secretsManagerClient);
+    }
 
     /**
      * Construtor que inicializa o cliente do Secrets Manager com uma região, conversor padrão e cliente customizado.
