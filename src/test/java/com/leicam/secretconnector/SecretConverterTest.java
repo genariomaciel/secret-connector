@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Nested;
 import com.leicam.secretconnector.converter.SecretConverter;
 import com.leicam.secretconnector.converter.impl.SecretConverters;
 import com.leicam.secretconnector.models.DatabaseCredentials;
+import com.leicam.secretconnector.models.Secret;
 import com.leicam.secretconnector.models.SecretValue;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -268,7 +269,7 @@ public class SecretConverterTest {
         @DisplayName("Deve converter DatabaseCredentials com sucesso")
         public void testConvertDatabaseCredentials() throws Exception {
             SecretConverter<DatabaseCredentials> converter = SecretConverters.asObject(DatabaseCredentials.class);
-            String json = "{\"host\":\"localhost\",\"port\":5432,\"username\":\"admin\",\"password\":\"secret\",\"database\":\"mydb\"}";
+            String json = "{\"appname\":\"app\",\"host\":\"localhost\",\"user\":\"admin\",\"pass\":\"secret\",\"dialect\":\"mydb\"}";
             
             DatabaseCredentials result = converter.convert(json);
             

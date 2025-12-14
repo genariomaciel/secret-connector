@@ -23,6 +23,7 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRespon
 import software.amazon.awssdk.services.secretsmanager.model.SecretsManagerException;
 import com.leicam.secretconnector.converter.SecretConverter;
 import com.leicam.secretconnector.converter.impl.SecretConverters;
+import com.leicam.secretconnector.models.Secret;
 
 /**
  * Testes unitários para a classe SecretManagerConnector.
@@ -39,7 +40,7 @@ public class SecretManagerConnectorTest {
 
     @BeforeEach
     public void setUp() {
-        connector = new SecretManagerConnector("us-east-1", SecretConverters.asString(), mockClient);
+        connector = new SecretManagerConnector(mockClient);
     }
 
     @Test
@@ -47,13 +48,6 @@ public class SecretManagerConnectorTest {
     public void testConnectorCreation() {
         assertNotNull(connector);
         assertNotNull(connector.getSecretsManagerClient());
-        assertEquals("us-east-1", connector.getRegion());
-    }
-
-    @Test
-    @DisplayName("Deve retornar a região correta")
-    public void testGetRegion() {
-        assertEquals("us-east-1", connector.getRegion());
     }
 
     @Test

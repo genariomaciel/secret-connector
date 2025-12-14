@@ -1,4 +1,4 @@
-package com.leicam.secretconnector;
+package com.leicam.secretconnector.models;
 
 public class Secret {
   private String clientId;
@@ -27,6 +27,5 @@ public class Secret {
   public void setClientSecret(String clientSecret) {
     this.clientSecret = clientSecret;
   }
-
 
 }
