@@ -103,10 +103,6 @@ public class SecretManagerConnector {
     public SecretManagerConnector(SecretConverter<?> converter, SecretsManagerClient secretsManagerClient) {
         this.converter = converter;
         this.secretsManagerClient = secretsManagerClient;
-
-        logger.info("SecretManagerConnector inicializado com conversor padrão: {}", 
-            converter.getClass().getSimpleName()
-        );
     }
 
     /**
@@ -120,13 +116,7 @@ public class SecretManagerConnector {
      */
     public <T> T get(String secretName, SecretConverter<T> converter) {
         try {
-            String secretValue = get(secretName);
-            logger.debug("Convertendo secret '{}' para tipo genérico", secretName);
-
-            T convertedValue = converter.convert(secretValue);
-            logger.info("Secret '{}' convertido com sucesso para tipo {}", secretName, 
-                    convertedValue.getClass().getSimpleName());
-            return convertedValue;
+            return converter.convert(get(secretName));
         } catch (Exception e) {
             logger.error("Erro ao converter secret '{}': {}", secretName, e.getMessage());
             throw new SecretManagerException("Falha ao converter o secret: " + secretName, e);
@@ -143,8 +133,6 @@ public class SecretManagerConnector {
      */
     public String get(String secretName) {
         try {
-            logger.debug("Recuperando secret: {}", secretName);
-            
             GetSecretValueRequest request = GetSecretValueRequest.builder()
                 .secretId(secretName)
                 .build();
@@ -157,7 +145,6 @@ public class SecretManagerConnector {
             } else {
                 secretValue = new String(response.secretBinary().asByteArray());
             }
-            logger.debug("Secret recuperado \n'{}'", response.toString());
             
             return secretValue;
             
@@ -175,7 +162,6 @@ public class SecretManagerConnector {
      */
     public boolean secretExists(String secretName) {
         try {
-            logger.debug("Verificando existência do secret: {}", secretName);
             
             GetSecretValueRequest request = GetSecretValueRequest.builder()
                 .secretId(secretName)

@@ -1,7 +1,6 @@
 package com.leicam.secretconnector;
 
 import java.net.URI;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,65 +21,21 @@ public class Application {
         String accessKey = "local-stack-id";
         String secretKey = "local-stack-secret";
         String endpoint = "http://localhost:4566";
+        String secretName = "product_database_credentials";
 
-        Application app = new Application();
-        SecretManagerConnector connector = new SecretManagerConnector(app.createForLocalStack(region, endpoint, accessKey, secretKey));
+        SecretManagerConnector connector = new SecretManagerConnector(Application.createForLocalStack(region, endpoint, accessKey, secretKey));
+
+        logger.info("Secret como String: {}", connector.get(secretName));
+        logger.info("Database Credentials: {}", connector.get(secretName, SecretConverters.asObject(DatabaseCredentials.class)));
         
-        String secretString = app.getSecretToString(connector).orElse("Secret não encontrada");
-        logger.info("Secret como String: {}", secretString);
-        
-        connector = new SecretManagerConnector(app.createForLocalStack(region, endpoint, accessKey, secretKey));
-        Optional<DatabaseCredentials> dbCredentials = app.getSecretDatabaseCredentials(connector);
-        if (dbCredentials.isPresent()) {
-            logger.info("Database Credentials: {}", dbCredentials.get());
-        } else {
-            logger.debug("Database Credentials não encontradas");
-        }   
+        connector.close();
 
     }
 
-
-    public Optional<String> getSecretToString(SecretManagerConnector connector) {
-
-        Optional<String> secretValue = null;
-        try {
-            // Obtém a secret (substitua 'my-secret' pelo ARN ou Name da secret)
-            String secretName = "product_database_credentials";
-            secretValue = Optional.of(connector.get(secretName));
-            
-            logger.debug("Secret obtida com sucesso: {}", secretValue.get());
-            
-        } catch (SecretManagerException e) {
-            secretValue = Optional.empty();
-            logger.error("Erro ao obter a secret: {}", e.getMessage());
-        } finally {
-            connector.close();
-        }
-        return secretValue;
-    }
-
-    public Optional<DatabaseCredentials> getSecretDatabaseCredentials(SecretManagerConnector connector) {
-        Optional<DatabaseCredentials> databaseCredentials = null;
-        try {
-            // Obtém a secret (substitua 'my-secret' pelo ARN ou Name da secret)
-            String secretName = "product_database_credentials";
-            databaseCredentials = Optional.of(connector.get(secretName, SecretConverters.asObject(DatabaseCredentials.class)));
-            
-            logger.debug("Secret obtida com sucesso: {}", databaseCredentials);
-            
-        } catch (SecretManagerException e) {
-            databaseCredentials = Optional.empty();
-            logger.error("Erro ao obter a secret: {}", e.getMessage());
-        } finally {
-            connector.close();
-        }
-        return databaseCredentials;
-    }
-
-    public SecretsManagerClient createForLocalStack(String region, String endpoint, String accessKey, String secretKey) {
+    private static SecretsManagerClient createForLocalStack(String region, String endpoint, String accessKey, String secretKey) {
         return SecretsManagerClient.builder()
         .region(Region.of(region))
-        .endpointOverride(URI.create(endpoint)) // ex: http://localhost:4566
+        .endpointOverride(URI.create(endpoint)) 
         .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
         .build();
     }
