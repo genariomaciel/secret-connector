@@ -121,8 +121,8 @@ Se executando em uma instância EC2, use uma IAM Role com permissão para acessa
 ```
 
 ## Estrutura do Projeto
-[Arquitetura do projeto](ARQUITETURA.md)
-[Instruções de utilização do componente](<INSTRUÇÕES DE UTILIZAÇÃO.md>)
+[**Arquitetura do projeto**](ARQUITETURA.md)\
+[**Instruções de utilização do componente**](<INSTRUÇÕES DE UTILIZAÇÃO.md>)
 
 
 ## Dependências
