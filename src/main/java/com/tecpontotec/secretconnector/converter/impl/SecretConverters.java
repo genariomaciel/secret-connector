@@ -1,7 +1,7 @@
-package com.leicam.secretconnector.converter.impl;
+package com.tecpontotec.secretconnector.converter.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.leicam.secretconnector.converter.SecretConverter;
+import com.tecpontotec.secretconnector.converter.SecretConverter;
 
 /**
  * Classe utilitária que fornece conversores pré-configurados para tipos comuns.

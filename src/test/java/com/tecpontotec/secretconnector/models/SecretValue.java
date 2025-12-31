@@ -1,4 +1,4 @@
-package com.leicam.secretconnector.models;
+package com.tecpontotec.secretconnector.models;
 
 import java.io.Serializable;
 

@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>br.com.leicam</groupId>
+    <groupId>com.tec-ponto-tec</groupId>
     <artifactId>secret-connector</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
@@ -57,13 +57,13 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.36</version>
+            <version>2.0.17</version>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.36</version>
+            <version>2.0.17</version>
             <scope>test</scope>
         </dependency>
 

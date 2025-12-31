@@ -4,8 +4,8 @@ package com.leicam.secretconnector.models;
  * Exemplo de classe para representar credenciais em formato JSON.
  */
 public class DatabaseCredentials {
-    private String appname;
     private String host;
+    private int port;
     private String user;
     private String pass;
     private String dialect;
@@ -13,29 +13,28 @@ public class DatabaseCredentials {
     // Construtores
     public DatabaseCredentials() {}
 
-    public DatabaseCredentials(String appname, String host, int port, String user, String pass, String dialect) {
-        this.appname = appname;
+    public DatabaseCredentials(String host, int port, String user, String pass, String dialect) {
         this.host = host;
+        this.port = port;
         this.user = user;
         this.pass = pass;
         this.dialect = dialect;
     }
 
     // Getters e Setters
-    public String getAppname() {
-        return host;
-    }
-
-    public void setAppname(String appname) {
-        this.appname = appname;
-    }
-    
     public String getHost() {
         return host;
     }
 
     public void setHost(String host) {
         this.host = host;
+    }
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 
     public String getUser() {

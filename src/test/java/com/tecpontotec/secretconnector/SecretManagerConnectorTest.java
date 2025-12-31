@@ -1,8 +1,7 @@
-package com.leicam.secretconnector;
+package com.tecpontotec.secretconnector;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,9 +20,11 @@ import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest;
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse;
 import software.amazon.awssdk.services.secretsmanager.model.SecretsManagerException;
-import com.leicam.secretconnector.converter.SecretConverter;
-import com.leicam.secretconnector.converter.impl.SecretConverters;
-import com.leicam.secretconnector.models.Secret;
+
+import com.tecpontotec.secretconnector.SecretManagerConnector;
+import com.tecpontotec.secretconnector.converter.impl.SecretConverters;
+import com.tecpontotec.secretconnector.exception.SecretManagerException;
+import com.tecpontotec.secretconnector.models.Secret;
 
 /**
  * Testes unitários para a classe SecretManagerConnector.
@@ -36,11 +37,12 @@ public class SecretManagerConnectorTest {
     @Mock
     private SecretsManagerClient mockClient;
 
-    private SecretManagerConnector connector;
+    private SecretManagerConnector<String> connector;
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @BeforeEach
     public void setUp() {
-        connector = new SecretManagerConnector(mockClient);
+        connector = new SecretManagerConnector(SecretConverters.asString(), mockClient);
     }
 
     @Test
@@ -51,13 +53,6 @@ public class SecretManagerConnectorTest {
     }
 
     @Test
-    @DisplayName("Deve retornar o conversor padrão injetado")
-    public void testGetConverter() {
-        assertNotNull(connector.getConverter());
-        assertInstanceOf(SecretConverter.class, connector.getConverter());
-    }
-
-    @Test
     @DisplayName("Deve retornar o cliente corretamente")
     public void testGetSecretsManagerClient() {
         assertEquals(mockClient, connector.getSecretsManagerClient());
@@ -65,7 +60,7 @@ public class SecretManagerConnectorTest {
 
     @Test
     @DisplayName("Deve recuperar secret como String com sucesso")
-    public void testGetSecretAsString() {
+    public void testGetSecretAsString() throws Exception {
         String secretName = "test-secret";
         String secretContent = "secret-value-123";
         
@@ -84,7 +79,7 @@ public class SecretManagerConnectorTest {
 
     @Test
     @DisplayName("Deve recuperar secret binário com sucesso")
-    public void testGetSecretAsBinary() {
+    public void testGetSecretAsBinary() throws Exception {
         String secretName = "test-binary-secret";
         byte[] binaryContent = "binary-secret-content".getBytes();
         
@@ -95,7 +90,7 @@ public class SecretManagerConnectorTest {
         when(mockClient.getSecretValue(any(GetSecretValueRequest.class)))
                 .thenReturn(response);
         
-        String result = connector.get(secretName);
+        String result = (String) connector.get(secretName);
         
         assertEquals(new String(binaryContent), result);
         verify(mockClient).getSecretValue(any(GetSecretValueRequest.class));
@@ -170,7 +165,7 @@ public class SecretManagerConnectorTest {
         when(mockClient.getSecretValue(any(GetSecretValueRequest.class)))
                 .thenReturn(response);
         
-        boolean exists = connector.secretExists(secretName);
+        boolean exists = connector.exists(secretName);
         
         assertTrue(exists);
     }
@@ -185,7 +180,7 @@ public class SecretManagerConnectorTest {
                         .message("Secret not found")
                         .build());
         
-        boolean exists = connector.secretExists(secretName);
+        boolean exists = connector.exists(secretName);
         
         assertFalse(exists);
     }
@@ -204,6 +199,26 @@ public class SecretManagerConnectorTest {
                 .thenReturn(response);
         
         Secret result = connector.get(secretName, SecretConverters.asObject(Secret.class));
+        
+        assertNotNull(result);
+        assertEquals("my-client", result.getClientId());
+        assertEquals("my-secret", result.getClientSecret());
+    }
+
+    @Test
+    @DisplayName("Deve converter JSON para objeto customizado")
+    public void testGetSecretAsJsonObjectByType() {
+        String secretName = "json-secret";
+        String secretContent = "{\"clientId\": \"my-client\", \"clientSecret\": \"my-secret\"}";
+        
+        GetSecretValueResponse response = GetSecretValueResponse.builder()
+                .secretString(secretContent)
+                .build();
+        
+        when(mockClient.getSecretValue(any(GetSecretValueRequest.class)))
+                .thenReturn(response);
+        
+        Secret result = connector.get(secretName, Secret.class);
         
         assertNotNull(result);
         assertEquals("my-client", result.getClientId());
