@@ -1,6 +1,6 @@
 Esta é uma iniciativa promovida pelo canal tech ponto tech.
 
-# AWS Secret Connector
+# **Secret Connector**
 
 Uma biblioteca Java para conectar ao **AWS Secrets Manager** e recuperar secrets de forma simples e eficiente.
 
