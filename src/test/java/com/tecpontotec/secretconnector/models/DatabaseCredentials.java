@@ -1,4 +1,4 @@
-package com.leicam.secretconnector.models;
+package com.tecpontotec.secretconnector.models;
 
 /**
  * Exemplo de classe para representar credenciais em formato JSON.
@@ -63,8 +63,8 @@ public class DatabaseCredentials {
 
     @Override
     public String toString() {
-        return String.format("DatabaseCredentials{appname='%s', host='%s', user='%s', pass='%s', dialect='%s'}", 
-                appname, host, user, pass, dialect);
+        return String.format("DatabaseCredentials{host='%s', port='%s', user='%s', pass='%s', dialect='%s'}", 
+                host, port, user, pass, dialect);
     }
 
 }

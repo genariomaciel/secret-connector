@@ -1,4 +1,4 @@
-package com.leicam.secretconnector;
+package com.tecpontotec.secretconnector.exception;
 
 /**
  * Exceção personalizada para erros relacionados ao AWS Secrets Manager.
