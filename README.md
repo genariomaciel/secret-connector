@@ -1,3 +1,5 @@
+Esta é uma iniciativa promovida pelo canal tech ponto tech.
+
 # AWS Secret Connector
 
 Uma biblioteca Java para conectar ao **AWS Secrets Manager** e recuperar secrets de forma simples e eficiente.
@@ -42,7 +44,7 @@ Adicione a dependência no seu `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>com.tec-ponto-tec</groupId>
+    <groupId>com.tech-ponto-tech</groupId>
     <artifactId>secret-connector</artifactId>
     <version>1.0.0</version>
 </dependency>

@@ -1,4 +1,4 @@
-package com.tecpontotec.secretconnector;
+package com.techpontotech.secretconnector;
 
 import software.amazon.awssdk.profiles.ProfileFile;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
@@ -8,10 +8,10 @@ import software.amazon.awssdk.services.secretsmanager.model.SecretsManagerExcept
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tecpontotec.secretconnector.config.SecretManagerClientConfig;
-import com.tecpontotec.secretconnector.converter.SecretConverter;
-import com.tecpontotec.secretconnector.converter.impl.SecretConverters;
-import com.tecpontotec.secretconnector.exception.SecretManagerException;
+import com.techpontotech.secretconnector.config.SecretManagerClientConfig;
+import com.techpontotech.secretconnector.converter.SecretConverter;
+import com.techpontotech.secretconnector.converter.impl.SecretConverters;
+import com.techpontotech.secretconnector.exception.SecretManagerException;
 
 /**
  * Classe responsável pela conexão e recuperação de secrets no AWS Secrets Manager.

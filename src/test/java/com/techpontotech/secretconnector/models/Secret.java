@@ -1,4 +1,4 @@
-package com.tecpontotec.secretconnector.models;
+package com.techpontotech.secretconnector.models;
 
 public class Secret {
   private String clientId;

@@ -1,4 +1,4 @@
-package com.tecpontotec.secretconnector.converter;
+package com.techpontotech.secretconnector.converter;
 
 /**
  * Interface funcional para conversão de string (secret) para um objeto genérico.

@@ -1,4 +1,4 @@
-package com.tecpontotec.secretconnector.models;
+package com.techpontotech.secretconnector.models;
 
 /**
  * Exemplo de classe para representar credenciais em formato JSON.

@@ -1,13 +1,13 @@
-package com.tecpontotec.secretconnector;
+package com.techpontotech.secretconnector;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 
-import com.tecpontotec.secretconnector.converter.SecretConverter;
-import com.tecpontotec.secretconnector.converter.impl.SecretConverters;
-import com.tecpontotec.secretconnector.models.DatabaseCredentials;
-import com.tecpontotec.secretconnector.models.Secret;
+import com.techpontotech.secretconnector.converter.SecretConverter;
+import com.techpontotech.secretconnector.converter.impl.SecretConverters;
+import com.techpontotech.secretconnector.models.DatabaseCredentials;
+import com.techpontotech.secretconnector.models.Secret;
 
 import static org.junit.jupiter.api.Assertions.*;
 

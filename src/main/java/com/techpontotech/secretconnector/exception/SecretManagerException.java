@@ -1,4 +1,4 @@
-package com.tecpontotec.secretconnector.exception;
+package com.techpontotech.secretconnector.exception;
 
 /**
  * Exceção personalizada para erros relacionados ao AWS Secrets Manager.

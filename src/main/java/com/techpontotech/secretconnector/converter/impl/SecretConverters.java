@@ -1,7 +1,7 @@
-package com.tecpontotec.secretconnector.converter.impl;
+package com.techpontotech.secretconnector.converter.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tecpontotec.secretconnector.converter.SecretConverter;
+import com.techpontotech.secretconnector.converter.SecretConverter;
 
 /**
  * Classe utilitária que fornece conversores pré-configurados para tipos comuns.

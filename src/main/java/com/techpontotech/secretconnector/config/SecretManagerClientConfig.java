@@ -1,4 +1,4 @@
-package com.tecpontotec.secretconnector.config;
+package com.techpontotech.secretconnector.config;
 
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.regions.Region;

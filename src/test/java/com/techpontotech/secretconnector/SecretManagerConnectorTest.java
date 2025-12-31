@@ -1,4 +1,4 @@
-package com.tecpontotec.secretconnector;
+package com.techpontotech.secretconnector;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -21,10 +21,10 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueReques
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse;
 import software.amazon.awssdk.services.secretsmanager.model.SecretsManagerException;
 
-import com.tecpontotec.secretconnector.SecretManagerConnector;
-import com.tecpontotec.secretconnector.converter.impl.SecretConverters;
-import com.tecpontotec.secretconnector.exception.SecretManagerException;
-import com.tecpontotec.secretconnector.models.Secret;
+import com.techpontotech.secretconnector.SecretManagerConnector;
+import com.techpontotech.secretconnector.converter.impl.SecretConverters;
+import com.techpontotech.secretconnector.exception.SecretManagerException;
+import com.techpontotech.secretconnector.models.Secret;
 
 /**
  * Testes unitários para a classe SecretManagerConnector.
