@@ -1,4 +1,4 @@
-package com.leicam.secretconnector;
+package com.tecpontotec.secretconnector.models;
 
 public class Secret {
   private String clientId;

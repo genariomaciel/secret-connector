@@ -4,12 +4,12 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.aws</groupId>
+    <groupId>com.tec-ponto-tec</groupId>
     <artifactId>secret-connector</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>AWS Secret Connector</name>
+    <name>Secret Connector</name>
     <description>Biblioteca para conexão com AWS Secrets Manager</description>
 
     <properties>
@@ -23,6 +23,22 @@
 
     </properties>
 
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>genariomaciel</id>
+            <name>Genario Maciel</name>
+            <url>https://github.com/genariomaciel</url>
+        </developer>
+    </developers>
+
     <dependencies>
         <!-- AWS SDK for Java 2.x -->
         <dependency>
@@ -35,13 +51,13 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.36</version>
+            <version>2.0.17</version>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.36</version>
+            <version>2.0.17</version>
             <scope>test</scope>
         </dependency>
 
@@ -80,7 +96,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.15.2</version>
+            <version>2.20.1</version>
             <optional>true</optional>
         </dependency>
 

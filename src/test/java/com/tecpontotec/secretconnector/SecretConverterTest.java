@@ -1,13 +1,13 @@
-package com.leicam.secretconnector;
+package com.tecpontotec.secretconnector;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 
-import com.leicam.secretconnector.converter.SecretConverter;
-import com.leicam.secretconnector.converter.impl.SecretConverters;
-import com.leicam.secretconnector.models.DatabaseCredentials;
-import com.leicam.secretconnector.models.SecretValue;
+import com.tecpontotec.secretconnector.converter.SecretConverter;
+import com.tecpontotec.secretconnector.converter.impl.SecretConverters;
+import com.tecpontotec.secretconnector.models.DatabaseCredentials;
+import com.tecpontotec.secretconnector.models.Secret;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -268,11 +268,12 @@ public class SecretConverterTest {
         @DisplayName("Deve converter DatabaseCredentials com sucesso")
         public void testConvertDatabaseCredentials() throws Exception {
             SecretConverter<DatabaseCredentials> converter = SecretConverters.asObject(DatabaseCredentials.class);
-            String json = "{\"host\":\"localhost\",\"port\":5432,\"username\":\"admin\",\"password\":\"secret\",\"database\":\"mydb\"}";
+            String json = "{\"host\":\"localhost\",\"port\":5432,\"user\":\"admin\",\"pass\":\"secret\",\"dialect\":\"mydb\"}";
             
             DatabaseCredentials result = converter.convert(json);
             
             assertEquals("localhost", result.getHost());
+            assertEquals(5432, result.getPort());
             assertEquals("admin", result.getUser());
             assertEquals("secret", result.getPass());
         }
@@ -338,63 +339,4 @@ public class SecretConverterTest {
         }
     }
 
-    @Nested
-    @DisplayName("Testes de SecretValue")
-    class SecretValueTests {
-
-        @Test
-        @DisplayName("SecretValue deve ser criado corretamente")
-        public void testSecretValueCreation() {
-            SecretValue secretValue = new SecretValue("test-secret", "secret-content");
-            
-            assertEquals("test-secret", secretValue.getSecretName());
-            assertEquals("secret-content", secretValue.getSecretContent());
-            assertFalse(secretValue.isEmpty());
-        }
-
-        @Test
-        @DisplayName("SecretValue com conteúdo vazio deve retornar isEmpty como true")
-        public void testSecretValueEmpty() {
-            SecretValue secretValue = new SecretValue("empty-secret", "");
-            assertTrue(secretValue.isEmpty());
-        }
-
-        @Test
-        @DisplayName("SecretValue com conteúdo null deve retornar isEmpty como true")
-        public void testSecretValueNull() {
-            SecretValue secretValue = new SecretValue("null-secret", null);
-            assertTrue(secretValue.isEmpty());
-        }
-
-        @Test
-        @DisplayName("SecretValue.equals deve funcionar corretamente")
-        public void testSecretValueEquals() {
-            SecretValue sv1 = new SecretValue("secret", "content");
-            SecretValue sv2 = new SecretValue("secret", "content");
-            SecretValue sv3 = new SecretValue("secret", "different");
-            
-            assertEquals(sv1, sv2);
-            assertNotEquals(sv1, sv3);
-        }
-
-        @Test
-        @DisplayName("SecretValue.hashCode deve ser consistente")
-        public void testSecretValueHashCode() {
-            SecretValue sv1 = new SecretValue("secret", "content");
-            SecretValue sv2 = new SecretValue("secret", "content");
-            
-            assertEquals(sv1.hashCode(), sv2.hashCode());
-        }
-
-        @Test
-        @DisplayName("SecretValue.toString deve retornar representação legível")
-        public void testSecretValueToString() {
-            SecretValue secretValue = new SecretValue("test-secret", "secret-content");
-            String toString = secretValue.toString();
-            
-            assertNotNull(toString);
-            assertTrue(toString.contains("test-secret"));
-            assertTrue(toString.contains("contentLength"));
-        }
-    }
 }

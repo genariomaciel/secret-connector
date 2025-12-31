@@ -1,4 +1,4 @@
-package com.leicam.secretconnector;
+package com.tecpontotec.secretconnector;
 
 import software.amazon.awssdk.profiles.ProfileFile;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
@@ -8,19 +8,20 @@ import software.amazon.awssdk.services.secretsmanager.model.SecretsManagerExcept
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.leicam.secretconnector.config.SecretManagerClientConfig;
-import com.leicam.secretconnector.converter.SecretConverter;
-import com.leicam.secretconnector.converter.impl.SecretConverters;
+import com.tecpontotec.secretconnector.config.SecretManagerClientConfig;
+import com.tecpontotec.secretconnector.converter.SecretConverter;
+import com.tecpontotec.secretconnector.converter.impl.SecretConverters;
+import com.tecpontotec.secretconnector.exception.SecretManagerException;
 
 /**
  * Classe responsável pela conexão e recuperação de secrets no AWS Secrets Manager.
  * Fornece uma interface simples para obter valores de secrets armazenados na AWS.
  */
-public class SecretManagerConnector {
+public class SecretManagerConnector<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(SecretManagerConnector.class);
     private final SecretsManagerClient secretsManagerClient;
-    private final SecretConverter<?> converter;
+    private final SecretConverter<T> converter;
 
     /**
      * Construtor padrão que inicializa o conector com configurações pré-definidas.
@@ -65,7 +66,7 @@ public class SecretManagerConnector {
         this(SecretConverters.asString(), SecretManagerClientConfig.create(region, profileName));
     }
 
-    /**
+        /**
      * Construtor que inicializa o cliente do Secrets Manager com uma região, conversor padrão e cliente customizado.
      * Este é o construtor principal que permite máxima flexibilidade na configuração do conector.
      * O conversor padrão será utilizado em chamadas de getSecret sem especificar um conversor explícito.
@@ -100,9 +101,39 @@ public class SecretManagerConnector {
      * 
      * @throws IllegalArgumentException se algum dos parâmetros for nulo
      */
+    @SuppressWarnings("unchecked")
     public SecretManagerConnector(SecretConverter<?> converter, SecretsManagerClient secretsManagerClient) {
-        this.converter = converter;
+        this.converter = (SecretConverter<T>)converter;
         this.secretsManagerClient = secretsManagerClient;
+
+        logger.debug("SecretManagerConnector inicializado com conversor padrão: {}", 
+            converter.getClass().getSimpleName()
+        );
+    }
+
+        /**
+     * Recupera o valor de um secret armazenado no AWS Secrets Manager.
+     *
+     * @param  secretName   O nome ou ARN do secret a ser recuperado
+     * @return Ojbect       O valor do secret recuperado 
+     * @throws Exception 
+     * @throws SecretNotFoundException se o secret não for encontrado
+     * @throws SecretManagerException se ocorrer erro ao recuperar o secret
+     */
+    public T get(String secretName) throws Exception {
+        try {
+            logger.debug("Recuperando secret: {}", secretName);
+            
+            String secretValue = getRawSecretString(secretName);
+
+            logger.debug("Secret recuperado \n'{}'", secretValue);
+
+            return this.converter.convert(secretValue);
+            
+        } catch (SecretsManagerException e) {
+            logger.error("Erro ao recuperar secret '{}': {}", secretName, e.getMessage());
+            throw new SecretManagerException("Falha ao recuperar o secret: " + secretName, e);
+        }
     }
 
     /**
@@ -114,9 +145,22 @@ public class SecretManagerConnector {
      * @return o valor do secret convertido para o tipo T
      * @throws SecretManagerException se ocorrer erro ao recuperar ou converter o secret
      */
-    public <T> T get(String secretName, SecretConverter<T> converter) {
+    public <R> R get(String secretName, Class<R> clazz) {
         try {
-            return converter.convert(get(secretName));
+            String secretValue = getRawSecretString(secretName);
+            logger.debug("Convertendo secret '{}' para tipo genérico", secretName);
+
+            if (clazz == String.class) {
+                logger.debug("Usando conversor pré-definido para String");
+                return clazz.cast(secretValue);
+            }
+            R convertedValue = SecretConverters.asObject(clazz).convert(secretValue);
+
+            logger.debug("Secret '{}' convertido com sucesso para tipo {}", secretName, 
+                    convertedValue.getClass().getSimpleName());
+
+            return convertedValue;
+
         } catch (Exception e) {
             logger.error("Erro ao converter secret '{}': {}", secretName, e.getMessage());
             throw new SecretManagerException("Falha ao converter o secret: " + secretName, e);
@@ -124,35 +168,32 @@ public class SecretManagerConnector {
     }
 
     /**
-     * Recupera o valor de um secret armazenado no AWS Secrets Manager.
-     *
+     * Recupera o valor de um secret e converte para o tipo especificado usando um conversor genérico.
+     * 
+     * @param <T> o tipo de objeto a ser retornado
      * @param secretName o nome ou ARN do secret a ser recuperado
-     * @return o valor do secret em formato String
-     * @throws SecretNotFoundException se o secret não for encontrado
-     * @throws SecretManagerException se ocorrer erro ao recuperar o secret
+     * @param converter a função conversora que transforma a string em um objeto do tipo T
+     * @return o valor do secret convertido para o tipo T
+     * @throws SecretManagerException se ocorrer erro ao recuperar ou converter o secret
      */
-    public String get(String secretName) {
+    public <R> R get(String secretName, SecretConverter<R> converter) {
         try {
-            GetSecretValueRequest request = GetSecretValueRequest.builder()
-                .secretId(secretName)
-                .build();
+            String secretValue = getRawSecretString(secretName);
+            logger.debug("Convertendo secret '{}' para tipo genérico", secretName);
 
-            GetSecretValueResponse response = secretsManagerClient.getSecretValue(request);
-            
-            String secretValue;
-            if (response.secretString() != null) {
-                secretValue = response.secretString();
-            } else {
-                secretValue = new String(response.secretBinary().asByteArray());
-            }
-            
-            return secretValue;
-            
-        } catch (SecretsManagerException e) {
-            logger.error("Erro ao recuperar secret '{}': {}", secretName, e.getMessage());
-            throw new SecretManagerException("Falha ao recuperar o secret: " + secretName, e);
+            R convertedValue = converter.convert(secretValue);
+            logger.debug("Secret '{}' convertido com sucesso para tipo {}", secretName, 
+                    convertedValue.getClass().getSimpleName());
+                    
+            return convertedValue;
+        } catch (Exception e) {
+            logger.error("Erro ao converter secret '{}': {}", secretName, e.getMessage());
+            throw new SecretManagerException("Falha ao converter o secret: " + secretName, e);
         }
     }
+
+
+
 
     /**
      * Verifica se um secret existe no AWS Secrets Manager.
@@ -160,8 +201,9 @@ public class SecretManagerConnector {
      * @param secretName o nome ou ARN do secret
      * @return true se o secret existe, false caso contrário
      */
-    public boolean secretExists(String secretName) {
+    public boolean exists(String secretName) {
         try {
+            logger.debug("Verificando existência do secret: {}", secretName);
             
             GetSecretValueRequest request = GetSecretValueRequest.builder()
                 .secretId(secretName)
@@ -197,12 +239,20 @@ public class SecretManagerConnector {
     }
 
     /**
-     * Retorna o conversor padrão injetado no construtor.
-     *
-     * @return o conversor padrão, ou null se nenhum foi definido
+     * Lê o valor bruto do secret (String ou binary -> String).
      */
-    public SecretConverter<?> getConverter() {
-        return converter;
+    private String getRawSecretString(String secretName) {
+        GetSecretValueRequest request = GetSecretValueRequest.builder()
+            .secretId(secretName)
+            .build();
+
+        GetSecretValueResponse response = secretsManagerClient.getSecretValue(request);
+
+        if (response.secretString() != null) {
+            return response.secretString();
+        } else {
+            return new String(response.secretBinary().asByteArray());
+        }
     }
 
 }

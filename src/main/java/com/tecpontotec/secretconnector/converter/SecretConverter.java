@@ -1,4 +1,4 @@
-package com.leicam.secretconnector.converter;
+package com.tecpontotec.secretconnector.converter;
 
 /**
  * Interface funcional para conversão de string (secret) para um objeto genérico.
