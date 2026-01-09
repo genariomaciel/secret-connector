@@ -1,4 +1,4 @@
-Esta é uma iniciativa promovida pelo canal tech ponto tech.
+Esta é uma iniciativa promovida pelo canal ***TECH-PONTO-TECH*** 
 
 # **Secret Connector**
 

@@ -38,6 +38,10 @@ O `SecretManagerConnector` suporta **injeção de conversor padrão** no constru
         );
 ```
 
+### 4. Usando com Spring Boot
+- Deve-se criar um bean que busque a credencial no Secret Manager ao iniciar a aplicação ou em algum momento após o start da aplicação
+- Deve-se atentar ao custo de utilização, o serviço Secret Manager tem cobrança por requisição
+
 ## **Recuperando Secret**
 ### Exemplos Básicos
 ### Usando com o conversor padrão
@@ -278,6 +282,7 @@ INFO  Secret 'db/port' convertido com sucesso para tipo Integer
 - Documentar qual conversor foi injetado
 - Usar `get(secret-name)` para secrets que usam o conversor padrão
 - Usar `get(secret-name, converter)` para exceções
+- Criar o connector no inicio da aplicação obter a secret e fechar, evita custo com requisição desnecessária
 
 ❌ **DON'Ts**
 - Não injetar um conversor muito genérico (ex: lambda complexa)
@@ -285,21 +290,6 @@ INFO  Secret 'db/port' convertido com sucesso para tipo Integer
 - Não ignorar se o conversor injetado é null
 - Não reutilizar conector com conversor após close()
 
-## Integração com Spring Boot
-
-```java
-@Configuration
-public class SecretManagerConfig {
-    
-    @Bean
-    public SecretManagerConnector secretManagerConnector() {
-        return new SecretManagerConnector(
-            "sa-east-1",
-            SecretConverters.asObject(AppConfig.class)
-        );
-    }
-}
-```
 
 ## Exemplo Completo
 
